@@ -16,13 +16,6 @@ public interface CreditCardFieldDelegate {
 
   void onCreditCardNumberValid(String remainder);
 
-  void onExpirationDateValid(String remainder);
-
-  // Image should flip to back for security code
-  void onSecurityCodeValid(String remainder);
-
-  void onZipCodeValid();
-
   void onBadInput(EditText field);
 
   void focusOnField(CreditEntryFieldBase field, String initialValue);

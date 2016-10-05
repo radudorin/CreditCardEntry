@@ -21,7 +21,6 @@ import android.util.SparseArray;
 import android.view.Display;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -29,7 +28,6 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
@@ -40,9 +38,6 @@ import android.widget.TextView;
 import com.devmarvel.creditcardentry.R;
 import com.devmarvel.creditcardentry.fields.CreditCardText;
 import com.devmarvel.creditcardentry.fields.CreditEntryFieldBase;
-import com.devmarvel.creditcardentry.fields.ExpDateText;
-import com.devmarvel.creditcardentry.fields.SecurityCodeText;
-import com.devmarvel.creditcardentry.fields.ZipCodeText;
 import com.devmarvel.creditcardentry.library.CardType;
 import com.devmarvel.creditcardentry.library.CardValidCallback;
 import com.devmarvel.creditcardentry.library.CreditCard;
@@ -63,9 +58,6 @@ public class CreditCardEntry extends HorizontalScrollView implements
     private ImageView cardImage;
     private ImageView backCardImage;
     private final CreditCardText creditCardText;
-    private final ExpDateText expDateText;
-    private final SecurityCodeText securityCodeText;
-    private final ZipCodeText zipCodeText;
 
     private Map<CreditEntryFieldBase, CreditEntryFieldBase> nextFocusField = new HashMap<>(4);
     private Map<CreditEntryFieldBase, CreditEntryFieldBase> prevFocusField = new HashMap<>(4);
@@ -82,7 +74,7 @@ public class CreditCardEntry extends HorizontalScrollView implements
     private CardValidCallback onCardValidCallback;
 
     @SuppressWarnings("deprecation")
-    public CreditCardEntry(Context context, boolean includeExp, boolean includeSecurity, boolean includeZip, AttributeSet attrs, @SuppressWarnings("UnusedParameters") int style) {
+    public CreditCardEntry(Context context, AttributeSet attrs, @SuppressWarnings("UnusedParameters") int style) {
         super(context);
 
         this.context = context;
@@ -133,65 +125,6 @@ public class CreditCardEntry extends HorizontalScrollView implements
             textFourDigits.setTextColor(textColor);
         }
         container.addView(textFourDigits);
-
-        expDateText = new ExpDateText(context, attrs);
-        expDateText.setId(R.id.cc_exp);
-        if (includeExp) {
-            expDateText.setDelegate(this);
-            container.addView(expDateText);
-            nextFocusField.put(currentField, expDateText);
-            prevFocusField.put(expDateText, currentField);
-            currentField = expDateText;
-            includedFields.add(currentField);
-        }
-
-        securityCodeText = new SecurityCodeText(context, attrs);
-        securityCodeText.setId(R.id.cc_ccv);
-        if (includeSecurity) {
-            securityCodeText.setDelegate(this);
-            if (!includeZip) {
-                securityCodeText.setImeActionLabel("Done", EditorInfo.IME_ACTION_DONE);
-            }
-
-            securityCodeText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if (EditorInfo.IME_ACTION_DONE == actionId) {
-                        onSecurityCodeValid("");
-                        return true;
-                    }
-                    return false;
-                }
-            });
-            container.addView(securityCodeText);
-            nextFocusField.put(currentField, securityCodeText);
-            prevFocusField.put(securityCodeText, currentField);
-            currentField = securityCodeText;
-            includedFields.add(currentField);
-        }
-
-        zipCodeText = new ZipCodeText(context, attrs);
-        zipCodeText.setId(R.id.cc_zip);
-        if (includeZip) {
-            zipCodeText.setDelegate(this);
-            container.addView(zipCodeText);
-            zipCodeText.setImeActionLabel("DONE", EditorInfo.IME_ACTION_DONE);
-            zipCodeText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if (EditorInfo.IME_ACTION_DONE == actionId) {
-                        onZipCodeValid();
-                        return true;
-                    }
-                    return false;
-                }
-            });
-            nextFocusField.put(currentField, zipCodeText);
-            prevFocusField.put(zipCodeText, currentField);
-            currentField = zipCodeText;
-            includedFields.add(currentField);
-        }
-
         nextFocusField.put(currentField, null);
 
         this.addView(container);
@@ -217,22 +150,6 @@ public class CreditCardEntry extends HorizontalScrollView implements
         nextField(this.creditCardText, remainder);
 
         updateLast4();
-    }
-
-    @Override
-    public void onExpirationDateValid(String remainder) {
-        nextField(this.expDateText, remainder);
-    }
-
-    @Override
-    public void onSecurityCodeValid(String remainder) {
-        nextField(securityCodeText, remainder);
-        updateCardImage(false);
-    }
-
-    @Override
-    public void onZipCodeValid() {
-        nextField(zipCodeText, null);
     }
 
     @Override
@@ -289,9 +206,6 @@ public class CreditCardEntry extends HorizontalScrollView implements
     @Override
     public void setOnFocusChangeListener(OnFocusChangeListener l) {
         creditCardText.setOnFocusChangeListener(l);
-        expDateText.setOnFocusChangeListener(l);
-        securityCodeText.setOnFocusChangeListener(l);
-        zipCodeText.setOnFocusChangeListener(l);
     }
 
     public void focusOnField(final CreditEntryFieldBase field) {
@@ -300,14 +214,14 @@ public class CreditCardEntry extends HorizontalScrollView implements
 
     public void focusOnField(final CreditEntryFieldBase field, String initialFieldValue) {
         field.requestFocus();
-        if(!scrolling) {
+        if (!scrolling) {
             scrolling = true;
             scrollToTarget(field instanceof CreditCardText ? 0 : field.getLeft(), new Runnable() {
                 @Override
                 public void run() {
                     scrolling = false;
                     // if there was another focus before we were done.. catch up.
-                    if(!field.hasFocus()) {
+                    if (!field.hasFocus()) {
                         View newFocus = getFocusedChild();
                         if (newFocus instanceof CreditEntryFieldBase) {
                             focusOnField((CreditEntryFieldBase) newFocus);
@@ -317,7 +231,7 @@ public class CreditCardEntry extends HorizontalScrollView implements
             });
         }
 
-        if(initialFieldValue != null && initialFieldValue.length() > 0) {
+        if (initialFieldValue != null && initialFieldValue.length() > 0) {
             field.formatAndSetText(initialFieldValue);
         }
 
@@ -325,18 +239,13 @@ public class CreditCardEntry extends HorizontalScrollView implements
             this.textHelper.setText(field.getHelperText());
         }
 
-        if (field instanceof SecurityCodeText) {
-            ((SecurityCodeText) field).setType(creditCardText.getType());
-            updateCardImage(true);
-        } else {
-            updateCardImage(false);
-        }
+        updateCardImage(false);
         field.setSelection(field.getText().length());
     }
 
     private void scrollToTarget(int target, final Runnable after) {
         int scrollX = getScrollX();
-        if(scrollX == target) {
+        if (scrollX == target) {
             if (after != null) after.run();
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
@@ -385,18 +294,6 @@ public class CreditCardEntry extends HorizontalScrollView implements
 
     public void setCardImageView(ImageView image) {
         cardImage = image;
-    }
-
-    public void setExpDate(String expiration, boolean nextField) {
-        setValue(this.expDateText, expiration, nextField);
-    }
-
-    public void setSecurityCode(String securityCode, boolean nextField) {
-        setValue(this.securityCodeText, securityCode, nextField);
-    }
-
-    public void setZipCode(String zip, boolean nextField) {
-        setValue(this.zipCodeText, zip, nextField);
     }
 
     @SuppressWarnings("unused")
@@ -460,31 +357,23 @@ public class CreditCardEntry extends HorizontalScrollView implements
                 delegate.onBadInput(field);
             }
 
-            @Override public void onExpirationDateValid(String remainder) {}
-            @Override public void onSecurityCodeValid(String remainder) {}
-            @Override public void onZipCodeValid() { }
-            @Override public void focusOnField(CreditEntryFieldBase field, String initialValue) { }
-            @Override public void focusOnPreviousField(CreditEntryFieldBase field) { }
+            @Override
+            public void focusOnField(CreditEntryFieldBase field, String initialValue) {
+            }
+
+            @Override
+            public void focusOnPreviousField(CreditEntryFieldBase field) {
+            }
         };
     }
 
     public void clearAll() {
         creditCardText.setText("");
-        expDateText.setText("");
-        securityCodeText.setText("");
-        zipCodeText.setText("");
         creditCardText.clearFocus();
-        expDateText.clearFocus();
-        securityCodeText.clearFocus();
-        zipCodeText.clearFocus();
-
-        scrollTo(0, 0);
     }
 
     public CreditCard getCreditCard() {
-        return new CreditCard(creditCardText.getText().toString(), expDateText.getText().toString(),
-                securityCodeText.getText().toString(), zipCodeText.getText().toString(),
-                creditCardText.getType());
+        return new CreditCard(creditCardText.getText().toString(), creditCardText.getType());
     }
 
     /**
@@ -492,33 +381,6 @@ public class CreditCardEntry extends HorizontalScrollView implements
      */
     public void focusCreditCard() {
         focusOnField(creditCardText);
-    }
-
-    /**
-     * request focus for the expiration field
-     */
-    public void focusExp() {
-        if (includedFields.contains(expDateText)) {
-            focusOnField(expDateText);
-        }
-    }
-
-    /**
-     * request focus for the security code field
-     */
-    public void focusSecurityCode() {
-        if (includedFields.contains(securityCodeText)) {
-            focusOnField(securityCodeText);
-        }
-    }
-
-    /**
-     * request focus for the zip field (IF it's enabled)
-     */
-    public void focusZip() {
-        if (includedFields.contains(zipCodeText)) {
-            focusOnField(zipCodeText);
-        }
     }
 
     private void updateLast4() {
@@ -584,14 +446,17 @@ public class CreditCardEntry extends HorizontalScrollView implements
     }
 
     @Override
-    public void onLongPress(MotionEvent e) {}
+    public void onLongPress(MotionEvent e) {
+    }
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         return false;
     }
 
-    @Override public void onShowPress(MotionEvent e) {}
+    @Override
+    public void onShowPress(MotionEvent e) {
+    }
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
@@ -631,7 +496,9 @@ public class CreditCardEntry extends HorizontalScrollView implements
         });
     }
 
-    /** helper & hint setting **/
+    /**
+     * helper & hint setting
+     **/
 
     public void setCreditCardTextHelper(String text) {
         creditCardText.setHelperText(text);
@@ -639,30 +506,6 @@ public class CreditCardEntry extends HorizontalScrollView implements
 
     public void setCreditCardTextHint(String text) {
         creditCardText.setHint(text);
-    }
-
-    public void setExpDateTextHelper(String text) {
-        expDateText.setHelperText(text);
-    }
-
-    public void setExpDateTextHint(String text) {
-        expDateText.setHint(text);
-    }
-
-    public void setSecurityCodeTextHelper(String text) {
-        securityCodeText.setHelperText(text);
-    }
-
-    public void setSecurityCodeTextHint(String text) {
-        securityCodeText.setHint(text);
-    }
-
-    public void setZipCodeTextHelper(String text) {
-        zipCodeText.setHelperText(text);
-    }
-
-    public void setZipCodeTextHint(String text) {
-        zipCodeText.setHint(text);
     }
 
 }

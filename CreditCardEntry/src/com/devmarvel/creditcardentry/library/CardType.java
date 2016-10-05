@@ -32,24 +32,34 @@ public enum CardType implements Serializable {
     MASTERCARD("MasterCard", R.drawable.master_card, CardRegex.REGX_MC, CardRegex.REGX_MC_TYPE),
     AMEX("American Express", R.drawable.amex, CardRegex.REGX_AMEX, CardRegex.REGX_AMEX_TYPE),
     DISCOVER("Discover", R.drawable.discover, CardRegex.REGX_DISCOVER, CardRegex.REGX_DISCOVER_TYPE),
-    DINERS("DinersClub",R.drawable.diners_club,CardRegex.REGX_DINERS_CLUB,CardRegex.REGX_DINERS_CLUB_TYPE),
-    JCB("JCB",R.drawable.jcb_payment_ico,CardRegex.REGX_JCB,CardRegex.REGX_JCB_TYPE),
-    INVALID("Unknown", R.drawable.unknown_cc, null, null);
+    DINERS("DinersClub", R.drawable.diners_club, CardRegex.REGX_DINERS_CLUB, CardRegex.REGX_DINERS_CLUB_TYPE),
+    JCB("JCB", R.drawable.jcb_payment_ico, CardRegex.REGX_JCB, CardRegex.REGX_JCB_TYPE),
+    INVALID("Unknown", R.drawable.cc_back, null, null);
 
-  /** name for humans */
+    /**
+     * name for humans
+     */
     public final String name;
 
-  /** regex that matches the entire card number */
+    /**
+     * regex that matches the entire card number
+     */
     public final String fullRegex;
 
-  /** regex that will match when there is enough of the card to determine type */
+    /**
+     * regex that will match when there is enough of the card to determine type
+     */
     public final String typeRegex;
 
-  /** drawable for the front of the card */
+    /**
+     * drawable for the front of the card
+     */
     public final int frontResource;
 
-  /** drawable for the back of the card */
-    public final int backResource = R.drawable.cc_back;
+    /**
+     * drawable for the back of the card
+     */
+    public final int backResource = R.drawable.unknown_cc;
 
     CardType(String name, @DrawableRes int imageResource, String fullRegex, String typeRegex) {
         this.name = name;
