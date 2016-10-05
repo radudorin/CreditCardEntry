@@ -88,16 +88,14 @@ public class CreditCardForm extends RelativeLayout {
             layout.setLayoutDirection(LAYOUT_DIRECTION_LTR);
         }
 
+        Resources r = getResources();
+
         layout.setId(R.id.cc_form_layout);
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         params.addRule(LinearLayout.HORIZONTAL);
-
-
-        Resources r = getResources();
-        int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
-        params.setMargins(margin, 0, 0, 0);
+        params.setMargins(0, 0, 0, 0);
         layout.setLayoutParams(params);
         layout.setPadding(0, 0, 0, 0);
 
@@ -129,8 +127,10 @@ public class CreditCardForm extends RelativeLayout {
         layout.addView(cardImageFrame);
 
         // add the data entry form
+        int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());
         LinearLayout.LayoutParams entryParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         entryParams.gravity = Gravity.CENTER_VERTICAL;
+        entryParams.setMargins(margin, 0, 0, 0);
         entry = new CreditCardEntry(context, attrs, style);
         entry.setId(R.id.cc_entry);
 
