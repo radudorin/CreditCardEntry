@@ -285,6 +285,10 @@ public class CreditCardEntry extends HorizontalScrollView implements
         creditCardText.setHint(hint);
     }
 
+    public CreditEntryFieldBase getCreditEntryFieldBase() {
+        return creditCardText;
+    }
+
     /**
      * set the card number will auto focus next field if param is true
      */

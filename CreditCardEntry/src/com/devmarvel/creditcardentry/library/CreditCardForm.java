@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.devmarvel.creditcardentry.R;
+import com.devmarvel.creditcardentry.fields.CreditEntryFieldBase;
 import com.devmarvel.creditcardentry.internal.CreditCardEntry;
 
 public class CreditCardForm extends RelativeLayout {
@@ -169,6 +170,10 @@ public class CreditCardForm extends RelativeLayout {
 
     public void setOnCardValidCallback(CardValidCallback callback) {
         entry.setOnCardValidCallback(callback);
+    }
+
+    public CreditEntryFieldBase getCreditEntryFieldBase() {
+        return entry.getCreditEntryFieldBase();
     }
 
     /**
