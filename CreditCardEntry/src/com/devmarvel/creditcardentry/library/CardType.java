@@ -28,13 +28,13 @@ class CardRegex {
  * represents the type of card the user used
  */
 public enum CardType implements Serializable {
-    VISA("VISA", R.drawable.visa, CardRegex.REGX_VISA, CardRegex.REGX_VISA_TYPE),
-    MASTERCARD("MasterCard", R.drawable.master_card, CardRegex.REGX_MC, CardRegex.REGX_MC_TYPE),
-    AMEX("American Express", R.drawable.amex, CardRegex.REGX_AMEX, CardRegex.REGX_AMEX_TYPE),
-    DISCOVER("Discover", R.drawable.discover, CardRegex.REGX_DISCOVER, CardRegex.REGX_DISCOVER_TYPE),
-    DINERS("DinersClub", R.drawable.diners_club, CardRegex.REGX_DINERS_CLUB, CardRegex.REGX_DINERS_CLUB_TYPE),
-    JCB("JCB", R.drawable.jcb_payment_ico, CardRegex.REGX_JCB, CardRegex.REGX_JCB_TYPE),
-    INVALID("Unknown", R.drawable.cc_back, null, null);
+    VISA("VISA", R.drawable.visa_white, CardRegex.REGX_VISA, CardRegex.REGX_VISA_TYPE),
+    MASTERCARD("MasterCard", R.drawable.master_card_white, CardRegex.REGX_MC, CardRegex.REGX_MC_TYPE),
+    AMEX("American Express", R.drawable.unknown_white, CardRegex.REGX_AMEX, CardRegex.REGX_AMEX_TYPE),
+    DISCOVER("Discover", R.drawable.discover_white, CardRegex.REGX_DISCOVER, CardRegex.REGX_DISCOVER_TYPE),
+    DINERS("DinersClub", R.drawable.dinersclub_white, CardRegex.REGX_DINERS_CLUB, CardRegex.REGX_DINERS_CLUB_TYPE),
+    JCB("JCB", R.drawable.jcb_white, CardRegex.REGX_JCB, CardRegex.REGX_JCB_TYPE),
+    INVALID("Unknown", R.drawable.add_card, null, null);
 
     /**
      * name for humans
@@ -59,7 +59,7 @@ public enum CardType implements Serializable {
     /**
      * drawable for the back of the card
      */
-    public final int backResource = R.drawable.unknown_cc;
+    public final int backResource = R.drawable.add_card;
 
     CardType(String name, @DrawableRes int imageResource, String fullRegex, String typeRegex) {
         this.name = name;

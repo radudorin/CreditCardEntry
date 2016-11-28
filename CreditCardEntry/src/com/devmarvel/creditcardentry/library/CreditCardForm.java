@@ -32,6 +32,7 @@ public class CreditCardForm extends RelativeLayout {
     private boolean useDefaultColors;
     private boolean animateOnError;
     private String cardNumberHint = "1234 5678 9012 3456";
+    private CreditCardFormListener mListener;
 
     public CreditCardForm(Context context) {
         this(context, null);
@@ -73,6 +74,10 @@ public class CreditCardForm extends RelativeLayout {
         }
 
         init(context, attrs, defStyle);
+    }
+
+    public void setListener(CreditCardFormListener listener) {
+        mListener = listener;
     }
 
     private void init(Context context, AttributeSet attrs, int style) {
@@ -283,6 +288,10 @@ public class CreditCardForm extends RelativeLayout {
                 return new SavedState[size];
             }
         });
+    }
+
+    public interface CreditCardFormListener {
+        void onCreditCardEntered();
     }
 
 }
