@@ -30,7 +30,7 @@ class CardRegex {
 public enum CardType implements Serializable {
     VISA("VISA", R.drawable.visa_white, CardRegex.REGX_VISA, CardRegex.REGX_VISA_TYPE),
     MASTERCARD("MasterCard", R.drawable.master_card_white, CardRegex.REGX_MC, CardRegex.REGX_MC_TYPE),
-    AMEX("American Express", R.drawable.unknown_white, CardRegex.REGX_AMEX, CardRegex.REGX_AMEX_TYPE),
+    AMEX("American Express", R.drawable.amex_white, CardRegex.REGX_AMEX, CardRegex.REGX_AMEX_TYPE),
     DISCOVER("Discover", R.drawable.discover_white, CardRegex.REGX_DISCOVER, CardRegex.REGX_DISCOVER_TYPE),
     DINERS("DinersClub", R.drawable.dinersclub_white, CardRegex.REGX_DINERS_CLUB, CardRegex.REGX_DINERS_CLUB_TYPE),
     JCB("JCB", R.drawable.jcb_white, CardRegex.REGX_JCB, CardRegex.REGX_JCB_TYPE),
